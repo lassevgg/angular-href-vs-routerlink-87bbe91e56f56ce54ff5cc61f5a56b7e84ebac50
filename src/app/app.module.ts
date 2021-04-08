@@ -3,9 +3,12 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { FormGroup, FormControl } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { GenreComponent } from './genre/genre.component';
+import { EmployeeComponent } from './employee/employee.component';
 
 const appRoutes: Routes = [
   { path: 'genre', component: GenreComponent }
@@ -14,7 +17,8 @@ const appRoutes: Routes = [
 @NgModule({
   declarations: [
     AppComponent,
-    GenreComponent
+    GenreComponent,
+    EmployeeComponent
   ],
   imports: [
     BrowserModule,

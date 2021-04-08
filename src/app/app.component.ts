@@ -1,5 +1,6 @@
 import { ThrowStmt } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
+import { AdminUser } from './Models/AdminUser';
 
 import { Employee } from './Models/Employee';
 import { APIService } from './Services/api.service';
@@ -11,15 +12,17 @@ import { APIService } from './Services/api.service';
 })
 export class AppComponent implements OnInit {
 
-  employee: Employee = undefined;
+  employee: Employee;
+  adminUser: AdminUser;
 
-  constructor(private APIService:APIService) { }
+  constructor(private apiservice:APIService) { }
 
   ngOnInit(): void{
     if (this.employee == null) {
-      
-    } else {
-      
+      this.employee = new Employee;
+    }
+    if (this.adminUser == null) {
+      this.adminUser = new AdminUser;
     }
   }
 
@@ -32,7 +35,7 @@ export class AppComponent implements OnInit {
   }
 
   checkForLoginValue() {
-    if (this.employee != null) {
+    if (this.employee.id != null) {
       return true;
     } else {
       return false;
@@ -41,11 +44,17 @@ export class AppComponent implements OnInit {
 
 
   onSubmit(data) {
-    console.log("Username: " + data.username + " Password: " + data.passwd);
-
     this.employee.username = data.username;
-    this.employee.password = data.password;
+    this.employee.password = data.passwd;
 
+    this.apiservice.authenticateEmployee(this.employee).subscribe(
+      data => {this.adminUser = data}
+    );
 
+    console.log(this.adminUser);
+
+    let t = this.apiservice.setJwtToken(this.adminUser.JwtToken);
+
+    console.log(t);
   }
 }

@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { AdminUser } from '../Models/AdminUser';
 import { Auditorium } from '../Models/Auditorium';
 import { Employee } from '../Models/Employee';
 import { Genre } from '../Models/Genre';
@@ -12,11 +13,12 @@ import { Seat } from '../Models/Seat';
 import { SeatReserved } from '../Models/SeatReserved';
 
 //lav dynamisk
-var t = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6IjAiLCJyb2xlIjoiQWRtaW4iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3ZlcnNpb24iOiJWMy4xIiwibmJmIjoxNjE2NTcyMjA1LCJleHAiOjE2MTY3NDUwMDUsImlhdCI6MTYxNjU3MjIwNX0.c_0TzrJgZspUEiGBvyF4g5bJ31zKGPZjPXLjVK3VM1w';
+let JwtToken: string;
 
 const httpOptions = {
   headers: new HttpHeaders({
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'Authorization': "Bearer " + JwtToken
   })
 }
 
@@ -35,8 +37,16 @@ export class APIService {
   urlAPIScreening:string = "https://localhost:44366/Screening";
   urlAPISeat:string = "https://localhost:44366/Seat";
   urlAPISeatReserved:string = "https://localhost:44366/SeatReserved";
+  urlAPIAuthenticate:string = "https://localhost:44366/Authentication";
 
   constructor(private http:HttpClient) { }
+
+
+setJwtToken(token:string) : string{
+  JwtToken = token;
+  return JwtToken;
+}
+
 
 //#region Auditorium
 getAuditoriumList():Observable<Auditorium[]>{
@@ -65,8 +75,14 @@ postEmployee(newEmployeeData: Employee):Observable<Employee>{
 putEmployee(updateEmployeeData: Employee):Observable<Employee>{
   return this.http.put<Employee>(this.urlAPIEmployee, updateEmployeeData, httpOptions);}
 
-// deleteGenre(deleteGenreID: Genre):Observable<Genre>{
-//   return this.http.delete<Genre>(this.urlAPIGenre, deleteGenreID, httpOptions);}
+//deleteEmployee(deleteEmployeeData: Employee):Observable<Employee>{
+//  return this.http.delete<Employee>(this.urlAPIEmployee, deleteEmployeeData, httpOptions);}
+
+authenticateEmployee(employee: Employee):Observable<AdminUser>{
+  return this.http.post<AdminUser>(this.urlAPIAuthenticate, employee, httpOptions);}
+
+// authenticateEmployee(employee:Employee):Observable<Employee>{
+//   return this.http.post<Employee>(`${this.urlAPIAuthenticate}/employee, httpOptions);}
 //#endregion
 
 //#region Genre
