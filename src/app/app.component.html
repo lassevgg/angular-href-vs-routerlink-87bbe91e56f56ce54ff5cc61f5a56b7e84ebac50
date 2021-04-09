@@ -8,25 +8,30 @@
 </div>
 <hr> -->
 <div class="nav">
-  <ul>
-    <li><a routerLink="/">Home</a></li>
-    <li><a routerLink="/genre">Genre API</a></li>
-  </ul>
+  <nav>
+    <a routerLink="/">Home</a>
+    <a routerLink="/genre">Genres</a>
+    <a routerLink="/movie">Movies</a>
+    <a routerLink="/employee">Employees</a>
+  </nav>
 </div>
 <hr>
 
-<div *ngIf="checkForLoginValue(); else elseBlock">
-  <p>Welcome {{this.employee.username}}</p>
-</div>
-<ng-template #elseBlock>
-  <div class="login-container">
-    <form #user="ngForm" (ngSubmit)="onSubmit(user.value)">
-      <input type="text" name="username" placeholder="Username" ngModel required>
-      <input type="password" name="passwd" placeholder="Password" ngModel required>
-      <input type="submit" value="Submit">
-    </form>
+<div style="margin-left: 20px;">
+  <div *ngIf="checkForLoginValue(); else elseBlock">
+    <p>Welcome {{this.employee.username}}</p>
   </div>
-</ng-template>
+  <ng-template #elseBlock>
+    <div class="login-container">
+      <form #user="ngForm" (ngSubmit)="onSubmit(user.value)">
+        <input type="text" name="username" placeholder="Username" ngModel required>
+        <input type="password" name="passwd" placeholder="Password" ngModel required>
+        <input type="submit" value="Submit">
+      </form>
+    </div>
+  </ng-template>
+</div>
+
 
 
 

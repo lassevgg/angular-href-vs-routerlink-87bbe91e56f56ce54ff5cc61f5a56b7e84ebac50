@@ -1,5 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
 import { AdminUser } from '../Models/AdminUser';
 import { Auditorium } from '../Models/Auditorium';
@@ -89,14 +90,24 @@ authenticateEmployee(employee: Employee):Observable<AdminUser>{
 getGenreList():Observable<Genre[]>{
   return this.http.get<Genre[]>(this.urlAPIGenre);}
 
-postGenre(newGenreData: Genre):Observable<Genre>{
-  return this.http.post<Genre>(this.urlAPIGenre, newGenreData, httpOptions);}
+postGenre(newGenreData: Genre):Observable<boolean>{
+  return this.http.post<boolean>(this.urlAPIGenre + '/genre', newGenreData, httpOptions);}
 
-putGenre(updateGenreData: Genre):Observable<Genre>{
-  return this.http.put<Genre>(this.urlAPIGenre, updateGenreData, httpOptions);}
+putGenre(updateGenreData: Genre):Observable<boolean>{
+  return this.http.put<boolean>(this.urlAPIGenre + '/genre', updateGenreData, httpOptions);}
+  
 
-// deleteGenre(deleteGenreID: Genre):Observable<Genre>{
-//   return this.http.delete<Genre>(this.urlAPIGenre, deleteGenreID, httpOptions);}
+deleteGenre(deleteGenreID: Genre):Observable<boolean>{
+  var options = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+    }),
+    body:{
+      Id: deleteGenreID.id,
+      Type: null
+    },
+  };
+  return this.http.delete<boolean>(this.urlAPIGenre + '/genre', options);}
 //#endregion
 
 //#region Movie

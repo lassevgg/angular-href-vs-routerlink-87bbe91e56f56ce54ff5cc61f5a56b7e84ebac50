@@ -9,6 +9,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { GenreComponent } from './genre/genre.component';
 import { EmployeeComponent } from './employee/employee.component';
+import { MovieComponent } from './movie/movie.component';
 
 const appRoutes: Routes = [
   { path: 'genre', component: GenreComponent }
@@ -18,7 +19,8 @@ const appRoutes: Routes = [
   declarations: [
     AppComponent,
     GenreComponent,
-    EmployeeComponent
+    EmployeeComponent,
+    MovieComponent
   ],
   imports: [
     BrowserModule,

@@ -1,7 +1,60 @@
-<div>
+<nav>
+  <a (click)="toggleEditor('info')">Genre Info</a>
+  <a (click)="toggleEditor('get')" (click)="updateGenreList($event)">Get list of genres</a>
+  <a (click)="toggleEditor('post')">Create a new genre</a>
+  <a (click)="toggleEditor('update')">Update a genre</a>
+  <a (click)="toggleEditor('delete')">Delete a genre</a>
+</nav>
+
+<hr>
+
+<div *ngIf="showInfoEditor">
+Some great info about genres.
+</div>
+
+<div *ngIf="showGetEditor">
   <ul *ngFor="let item of genreList">
     <li>{{item.type}}</li>
   </ul>
 </div>
 
+<div *ngIf="showPostEditor">
+  <div>
+    <form #user="ngForm" (ngSubmit)="onSubmitPost(user.value)">
+      <input type="number" name="ID" placeholder="ID" ngModel required>
+      <input type="text" name="Type" placeholder="Type" ngModel required>
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+</div>
 
+<div *ngIf="showUpdateEditor">
+  <div>
+    <form #user="ngForm" (ngSubmit)="onSubmitUpdate(user.value)">
+      <input type="number" name="ID" placeholder="ID" ngModel required>
+      <input type="text" name="NewType" placeholder="NewType" ngModel required>
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+</div>
+
+<div *ngIf="showDeleteEditor">
+  <div>
+    <form #user="ngForm" (ngSubmit)="onSubmitDelete(user.value)">
+      <input type="number" name="ID" placeholder="ID" ngModel required>
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+</div>
+
+<div *ngIf="showOperationSuccessEditor">
+  <div>
+    Operation was a success!
+  </div>
+</div>
+
+<div *ngIf="showOperationFailedEditor">
+  <div>
+    Operation failed...
+  </div>
+</div>
