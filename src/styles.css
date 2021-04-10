@@ -80,6 +80,26 @@ nav a {
     box-sizing: border-box;
     color: black;
   }
+  input[type=number], select {
+    width: 12%;
+    padding: 7px 20px;
+    margin: 8px 10px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    color: black;
+  }
+  input[type=datetime], select {
+    width: 12%;
+    padding: 7px 20px;
+    margin: 8px 10px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    color: black;
+  }
   input[type=submit] {
     width: 7%;
     background-color: grey;
