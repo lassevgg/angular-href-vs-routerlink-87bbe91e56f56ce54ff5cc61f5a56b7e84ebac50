@@ -5,12 +5,17 @@ import { AdminUser } from './Models/AdminUser';
 import { Employee } from './Models/Employee';
 import { APIService } from './Services/api.service';
 
+export type EditorType = 'loginNo' | 'LoginYes'
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
+  editor: EditorType = 'loginNo';
+
+  title: string = "Cinema API"
 
   employee: Employee;
   adminUser: AdminUser;
@@ -26,6 +31,18 @@ export class AppComponent implements OnInit {
     }
   }
 
+  get showLoginYesEditor() {
+    return this.editor === 'LoginYes';
+  }
+
+  get showLoginNoEditor() {
+    return this.editor === 'loginNo';
+  }
+
+  toggleEditor(type: EditorType) {
+    this.editor = type;
+  }
+
   preventDefault() {
     event.preventDefault();
   }
@@ -34,27 +51,14 @@ export class AppComponent implements OnInit {
     event.preventDefault();
   }
 
-  checkForLoginValue() {
-    if (this.employee.id != null) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-
   onSubmit(data) {
     this.employee.username = data.username;
     this.employee.password = data.passwd;
 
-    this.apiservice.authenticateEmployee(this.employee).subscribe(
-      data => {this.adminUser = data}
-    );
-
-    console.log(this.adminUser);
-
-    let t = this.apiservice.setJwtToken(this.adminUser.JwtToken);
-
-    console.log(t);
+    this.apiservice.authenticateEmployee(this.employee).subscribe( (result) => {
+      this.adminUser = result
+      this.apiservice.setJwtToken(this.adminUser);
+      this.toggleEditor('LoginYes');
+    });
   }
 }

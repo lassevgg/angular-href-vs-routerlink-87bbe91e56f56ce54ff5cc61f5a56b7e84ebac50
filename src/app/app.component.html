@@ -1,42 +1,40 @@
-<!-- <div class="nav">
-  <p>Using "href"</p>
-  <ul>
-    <li><a href="/" (click)="onClick($event)">Home</a></li>
-    <li><a href="/products" (click)="onClick($event)">Products</a></li>
-    <li><a href="/about" (click)="onClick($event)">About</a></li>
-  </ul>
-</div>
-<hr> -->
 <div class="nav">
   <nav>
-    <a routerLink="/">Home</a>
+    <a routerLink="/" style="background-color: grey; border-radius: 10px;">Home</a>
     <a routerLink="/genre">Genres</a>
     <a routerLink="/movie">Movies</a>
+    <a routerLink="/screening">Screenings</a>
+    <a routerLink="/auditorium">Auditori (Theaters)</a>
+    <a routerLink="/seat">Seats</a>
+    <a routerLink="/seatReserved">Seat Reserved</a>
+    <a routerLink="/reservation">Reservations</a>
+    <a routerLink="/reservation-type">Reservation Types</a>
     <a routerLink="/employee">Employees</a>
   </nav>
 </div>
-<hr>
+<hr class="MenuSep">
 
-<div style="margin-left: 20px;">
-  <div *ngIf="checkForLoginValue(); else elseBlock">
-    <p>Welcome {{this.employee.username}}</p>
+<div *ngIf="showLoginNoEditor">
+  <div class="login-container" style="margin-left: 20px;">
+    <p>Employee login</p>
+    <form #user="ngForm" (ngSubmit)="onSubmit(user.value)">
+      <input type="text" name="username" placeholder="Username" ngModel required>
+      <input type="password" name="passwd" placeholder="Password" ngModel required>
+      <input type="submit" value="Login">
+    </form>
   </div>
-  <ng-template #elseBlock>
-    <div class="login-container">
-      <form #user="ngForm" (ngSubmit)="onSubmit(user.value)">
-        <input type="text" name="username" placeholder="Username" ngModel required>
-        <input type="password" name="passwd" placeholder="Password" ngModel required>
-        <input type="submit" value="Submit">
-      </form>
-    </div>
-  </ng-template>
+</div>
+
+<div *ngIf="showLoginYesEditor">
+  <div style="margin-left: 20px;">
+    <p>Welcome cinema employee</p>
+    <em style="font-weight: bold;">{{this.employee.username}}</em>
+  </div>
 </div>
 
 
-
-
-<hr>
+<hr class="MenuSep">
 <div class="page-content">
-  <p>Page Content</p>
+  <h4 style="font-weight: bolder;">⮶ Page Content ⮷</h4>
   <router-outlet></router-outlet>
 </div>

@@ -1,6 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs';
 import { AdminUser } from '../Models/AdminUser';
 import { Auditorium } from '../Models/Auditorium';
@@ -13,13 +12,11 @@ import { Screening } from '../Models/Screening';
 import { Seat } from '../Models/Seat';
 import { SeatReserved } from '../Models/SeatReserved';
 
-//lav dynamisk
 let JwtToken: string;
 
-const httpOptions = {
+var httpOptions = {
   headers: new HttpHeaders({
-    'Content-Type': 'application/json',
-    'Authorization': "Bearer " + JwtToken
+    'Content-Type': 'application/json'
   })
 }
 
@@ -29,6 +26,8 @@ const httpOptions = {
 })
 
 export class APIService {
+  adminUser: AdminUser;
+
   urlAPIAuditorium:string = "https://localhost:44366/Auditorium";
   urlAPIEmployee:string = "https://localhost:44366/Employee";
   urlAPIGenre:string = "https://localhost:44366/Genre";
@@ -43,9 +42,19 @@ export class APIService {
   constructor(private http:HttpClient) { }
 
 
-setJwtToken(token:string) : string{
-  JwtToken = token;
-  return JwtToken;
+setJwtToken(elevatedUser:AdminUser){
+  //adminuser properties var ikke skrevet med camel-case og derfor gad den ikke overføre noget fra result...
+  console.log(elevatedUser);
+  this.adminUser = elevatedUser;
+  JwtToken = elevatedUser.jwtToken
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': "Bearer " + JwtToken
+    })
+  }
+
+  console.log("Jwt token has been set to: " + JwtToken);
 }
 
 
@@ -53,11 +62,11 @@ setJwtToken(token:string) : string{
 getAuditoriumList():Observable<Auditorium[]>{
   return this.http.get<Auditorium[]>(this.urlAPIAuditorium);}
 
-postAuditorium(newAuditoriumData: Auditorium):Observable<Auditorium>{
-  return this.http.post<Auditorium>(this.urlAPIAuditorium, newAuditoriumData, httpOptions);}
+postAuditorium(newAuditoriumData: Auditorium):Observable<boolean>{
+  return this.http.post<boolean>(this.urlAPIAuditorium + '/Auditorium', newAuditoriumData, httpOptions);}
 
-putAuditorium(updateAuditoriumData: Auditorium):Observable<Auditorium>{
-  return this.http.put<Auditorium>(this.urlAPIAuditorium, updateAuditoriumData, httpOptions);}
+putAuditorium(updateAuditoriumData: Auditorium):Observable<boolean>{
+  return this.http.put<boolean>(this.urlAPIAuditorium + '/Auditorium', updateAuditoriumData, httpOptions);}
 
 // deleteGenre(deleteGenreID: Genre):Observable<Genre>{
 //   return this.http.delete<Genre>(this.urlAPIGenre, deleteGenreID, httpOptions);}
@@ -71,10 +80,10 @@ getEmployeeLogin(username:string, password:string):Observable<Employee[]>{
   return this.http.get<Employee[]>(this.urlAPIEmployee + '/' + username + '/' + password);}
 
 postEmployee(newEmployeeData: Employee):Observable<Employee>{
-  return this.http.post<Employee>(this.urlAPIEmployee, newEmployeeData, httpOptions);}
+  return this.http.post<Employee>(this.urlAPIEmployee + '/Employee', newEmployeeData, httpOptions);}
 
 putEmployee(updateEmployeeData: Employee):Observable<Employee>{
-  return this.http.put<Employee>(this.urlAPIEmployee, updateEmployeeData, httpOptions);}
+  return this.http.put<Employee>(this.urlAPIEmployee + '/Employee', updateEmployeeData, httpOptions);}
 
 //deleteEmployee(deleteEmployeeData: Employee):Observable<Employee>{
 //  return this.http.delete<Employee>(this.urlAPIEmployee, deleteEmployeeData, httpOptions);}
@@ -88,7 +97,7 @@ authenticateEmployee(employee: Employee):Observable<AdminUser>{
 
 //#region Genre
 getGenreList():Observable<Genre[]>{
-  return this.http.get<Genre[]>(this.urlAPIGenre);}
+  return this.http.get<Genre[]>(this.urlAPIGenre, httpOptions);}
 
 postGenre(newGenreData: Genre):Observable<boolean>{
   return this.http.post<boolean>(this.urlAPIGenre + '/genre', newGenreData, httpOptions);}
@@ -96,29 +105,31 @@ postGenre(newGenreData: Genre):Observable<boolean>{
 putGenre(updateGenreData: Genre):Observable<boolean>{
   return this.http.put<boolean>(this.urlAPIGenre + '/genre', updateGenreData, httpOptions);}
   
-
+//delete kan ikke tage body men har brug for det? kan sende via dette trick men det bliver altid ID 0 ovre i API'et.
+//muligvis bruge en post til at slette?
 deleteGenre(deleteGenreID: Genre):Observable<boolean>{
-  var options = {
+  var deletehttpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json',
+      'Authorization': "Bearer " + JwtToken
     }),
     body:{
-      Id: deleteGenreID.id,
-      Type: null
+      id: deleteGenreID,
+      type: null
     },
-  };
-  return this.http.delete<boolean>(this.urlAPIGenre + '/genre', options);}
+  }
+  return this.http.delete<boolean>(this.urlAPIGenre + '/genre', deletehttpOptions);}
 //#endregion
 
 //#region Movie
 getMovieList():Observable<Movie[]>{
   return this.http.get<Movie[]>(this.urlAPIMovie);}
 
-postMovie(newMovieData: Movie):Observable<Movie>{
-  return this.http.post<Movie>(this.urlAPIMovie, newMovieData, httpOptions);}
+postMovie(newMovieData: Movie):Observable<boolean>{
+  return this.http.post<boolean>(this.urlAPIMovie + '/movie', newMovieData, httpOptions);}
 
-putMovie(updateMovieData: Movie):Observable<Movie>{
-  return this.http.put<Movie>(this.urlAPIMovie, updateMovieData, httpOptions);}
+putMovie(updateMovieData: Movie):Observable<boolean>{
+  return this.http.put<boolean>(this.urlAPIMovie + '/movie', updateMovieData, httpOptions);}
 
 // deleteGenre(deleteGenreID: Genre):Observable<Genre>{
 //   return this.http.delete<Genre>(this.urlAPIGenre, deleteGenreID, httpOptions);}
@@ -129,10 +140,10 @@ getReservationList():Observable<Reservation[]>{
   return this.http.get<Reservation[]>(this.urlAPIReservation);}
 
 postReservation(newReservationData: Reservation):Observable<Reservation>{
-  return this.http.post<Reservation>(this.urlAPIReservation, newReservationData, httpOptions);}
+  return this.http.post<Reservation>(this.urlAPIReservation + '/Reservation', newReservationData, httpOptions);}
 
 putReservation(updateReservationData: Reservation):Observable<Reservation>{
-  return this.http.put<Reservation>(this.urlAPIReservation, updateReservationData, httpOptions);}
+  return this.http.put<Reservation>(this.urlAPIReservation + '/Reservation', updateReservationData, httpOptions);}
 
 // deleteGenre(deleteGenreID: Genre):Observable<Genre>{
 //   return this.http.delete<Genre>(this.urlAPIGenre, deleteGenreID, httpOptions);}
@@ -143,10 +154,10 @@ getReservationTypeList():Observable<ReservationType[]>{
   return this.http.get<ReservationType[]>(this.urlAPIReservationType);}
 
 postReservationType(newReservationTypeData: ReservationType):Observable<ReservationType>{
-  return this.http.post<ReservationType>(this.urlAPIReservationType, newReservationTypeData, httpOptions);}
+  return this.http.post<ReservationType>(this.urlAPIReservationType + '/ReservationType', newReservationTypeData, httpOptions);}
 
 putReservationType(updateReservationTypeData: ReservationType):Observable<ReservationType>{
-  return this.http.put<ReservationType>(this.urlAPIReservationType, updateReservationTypeData, httpOptions);}
+  return this.http.put<ReservationType>(this.urlAPIReservationType + '/ReservationType', updateReservationTypeData, httpOptions);}
 
 // deleteGenre(deleteGenreID: Genre):Observable<Genre>{
 //   return this.http.delete<Genre>(this.urlAPIGenre, deleteGenreID, httpOptions);}
@@ -154,13 +165,13 @@ putReservationType(updateReservationTypeData: ReservationType):Observable<Reserv
 
 //#region Screening
 getScreeningList():Observable<Screening[]>{
-  return this.http.get<Screening[]>(this.urlAPIReservationType);}
+  return this.http.get<Screening[]>(this.urlAPIScreening);}
 
-postScreening(newScreeningData: Screening):Observable<Screening>{
-  return this.http.post<Screening>(this.urlAPIScreening, newScreeningData, httpOptions);}
+postScreening(newScreeningData: Screening):Observable<boolean>{
+  return this.http.post<boolean>(this.urlAPIScreening + '/Screening', newScreeningData, httpOptions);}
 
-putScreening(updateScreeningData: Screening):Observable<Screening>{
-  return this.http.put<Screening>(this.urlAPIScreening, updateScreeningData, httpOptions);}
+putScreening(updateScreeningData: Screening):Observable<boolean>{
+  return this.http.put<boolean>(this.urlAPIScreening + '/Screening', updateScreeningData, httpOptions);}
 
 // deleteGenre(deleteGenreID: Genre):Observable<Genre>{
 //   return this.http.delete<Genre>(this.urlAPIGenre, deleteGenreID, httpOptions);}
@@ -174,10 +185,10 @@ getSeatsOnAuditorimId(auditoriumId: number):Observable<Seat[]>{
   return this.http.get<Seat[]>(this.urlAPISeat + "/ListSeatsOnAuditoriumId/" + auditoriumId);}
 
 postSeat(newSeatData: Seat):Observable<Seat>{
-  return this.http.post<Seat>(this.urlAPISeat, newSeatData, httpOptions);}
+  return this.http.post<Seat>(this.urlAPISeat + '/Seat', newSeatData, httpOptions);}
 
 putSeat(updateSeatData: Seat):Observable<Seat>{
-  return this.http.put<Seat>(this.urlAPISeat, updateSeatData, httpOptions);}
+  return this.http.put<Seat>(this.urlAPISeat + '/Seat', updateSeatData, httpOptions);}
 
 // deleteGenre(deleteGenreID: Genre):Observable<Genre>{
 //   return this.http.delete<Genre>(this.urlAPIGenre, deleteGenreID, httpOptions);}
@@ -188,10 +199,10 @@ getSeatReservedList():Observable<SeatReserved[]>{
   return this.http.get<SeatReserved[]>(this.urlAPISeatReserved);}
 
 postSeatReserved(newSeatReservedData: SeatReserved):Observable<SeatReserved>{
-  return this.http.post<SeatReserved>(this.urlAPISeatReserved, newSeatReservedData, httpOptions);}
+  return this.http.post<SeatReserved>(this.urlAPISeatReserved + '/SeatReserved', newSeatReservedData, httpOptions);}
 
 putSeatReserved(updateSeatReservedData: SeatReserved):Observable<SeatReserved>{
-  return this.http.put<SeatReserved>(this.urlAPISeatReserved, updateSeatReservedData, httpOptions);}
+  return this.http.put<SeatReserved>(this.urlAPISeatReserved + '/SeatReserved', updateSeatReservedData, httpOptions);}
 
 // deleteGenre(deleteGenreID: Genre):Observable<Genre>{
 //   return this.http.delete<Genre>(this.urlAPIGenre, deleteGenreID, httpOptions);}

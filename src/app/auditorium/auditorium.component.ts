@@ -1,23 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { Movie } from 'src/app/Models/Movie';
+import { Auditorium } from 'src/app/Models/Auditorium';
 import { APIService } from 'src/app/Services/api.service';
 
 export type EditorType = 'info' | 'get' | 'post' | 'update' | 'delete' | 'operationSuccess' | 'operationFailed' | 'elevatedUserMessage';
 
 @Component({
-  selector: 'app-movie',
-  templateUrl: './movie.component.html',
-  styleUrls: ['./movie.component.css']
+  selector: 'app-auditorium',
+  templateUrl: './auditorium.component.html',
+  styleUrls: ['./auditorium.component.css']
 })
-export class MovieComponent implements OnInit {
+export class AuditoriumComponent implements OnInit {
 
   editor: EditorType = 'info';
 
-  title: string = "Movie";
+  title: string = "Auditorium";
 
   elevatedUserRequired: boolean;
 
-  movieList: Movie[] = [];
+  auditoriumList: Auditorium[] = [];
   postSuccess: boolean = undefined
   putSuccess: boolean = undefined
   deleteSuccess: boolean = undefined
@@ -25,7 +25,7 @@ export class MovieComponent implements OnInit {
   constructor(private ApiService:APIService) { }
 
   ngOnInit(): void {
-    this.elevatedUserRequired = true;
+    this.elevatedUserRequired = false;
   }
 
   get showInfoEditor() {
@@ -75,29 +75,27 @@ export class MovieComponent implements OnInit {
     }        
   }
 
-  updateMovieList():void{
-    this.ApiService.getMovieList().subscribe( (result) => {
-      this.movieList = result
+  updateAuditoriumList():void{
+    this.ApiService.getAuditoriumList().subscribe( (result) => {
+      this.auditoriumList = result
+      console.log(this.auditoriumList)
     });
   }
 
-  getMovieListOut():Movie[]{    
-    return this.movieList;
+  getMovieListOut():Auditorium[]{    
+    return this.auditoriumList;
   }
 
   onSubmitPost(data){
-    var movie: Movie = new Movie;
+    var auditorium: Auditorium = new Auditorium;
 
-    movie.id = data.ID;
-    movie.title = data.Title
-    movie.genreId = data.GenreID
-    movie.director = data.Director
-    movie.description = data.Description
-    movie.durationMin = data.DurationMin
+    auditorium.id = data.ID;
+    auditorium.name = data.Name;
+    auditorium.seatsNumber = data.SeatsNumber;
 
-    console.log(movie);
+    console.log(auditorium);
 
-    this.ApiService.postMovie(movie).subscribe( (result) => {
+    this.ApiService.postAuditorium(auditorium).subscribe( (result) => {
       this.postSuccess = result
       console.log(this.postSuccess);
       if (this.postSuccess) {
@@ -110,18 +108,15 @@ export class MovieComponent implements OnInit {
   }
 
   onSubmitUpdate(data){
-    var movie: Movie = new Movie;
+    var auditorium: Auditorium = new Auditorium;
 
-    movie.id = data.ID;
-    movie.title = data.Title
-    movie.genreId = data.GenreID
-    movie.director = data.Director
-    movie.description = data.Description
-    movie.durationMin = data.DurationMin
+    auditorium.id = data.ID;
+    auditorium.name = data.Name;
+    auditorium.seatsNumber = data.SeatsNumber;
 
-    console.log(movie);
+    console.log(auditorium);
 
-    this.ApiService.putMovie(movie).subscribe( (result) => {
+    this.ApiService.putAuditorium(auditorium).subscribe( (result) => {
       this.putSuccess = result
       console.log(this.putSuccess);
       if (this.putSuccess) {

@@ -1,9 +1,9 @@
 <nav>
-  <a (click)="toggleEditor('info')">Genre Info</a>
-  <a (click)="toggleEditor('get')" (click)="updateGenreList($event)">Get list of genres</a>
-  <a (click)="toggleEditor('post')">Create a new genre</a>
-  <a (click)="toggleEditor('update')">Update a genre</a>
-  <a (click)="toggleEditor('delete')">Delete a genre</a>
+  <a class="mainItem" (click)="toggleEditor('info')">Genre Info</a>
+  <a class="mainItem" (click)="toggleEditor('get')" (click)="updateGenreList($event)">Get list of genres</a>
+  <a class="mainItem" (click)="toggleEditor('post')">Create a new genre</a>
+  <a class="mainItem" (click)="toggleEditor('update')">Update a genre</a>
+  <a class="mainItem" (click)="toggleEditor('delete')">Delete a genre</a>
 </nav>
 
 <hr>
@@ -12,14 +12,21 @@
 Some great info about genres.
 </div>
 
+<div *ngIf="showElevatedUserMessageEditor">
+  This action requires elevated user access, please login to view.
+</div>
+
 <div *ngIf="showGetEditor">
+  <h4>Below is a list of all genre entries.</h4>
   <ul *ngFor="let item of genreList">
+    <li>{{item.id}}</li>
     <li>{{item.type}}</li>
   </ul>
 </div>
 
 <div *ngIf="showPostEditor">
   <div>
+    <h4>Create a new genre entry.</h4>
     <form #user="ngForm" (ngSubmit)="onSubmitPost(user.value)">
       <input type="number" name="ID" placeholder="ID" ngModel required>
       <input type="text" name="Type" placeholder="Type" ngModel required>
@@ -30,6 +37,7 @@ Some great info about genres.
 
 <div *ngIf="showUpdateEditor">
   <div>
+    <h4>Update a genre entry.</h4>
     <form #user="ngForm" (ngSubmit)="onSubmitUpdate(user.value)">
       <input type="number" name="ID" placeholder="ID" ngModel required>
       <input type="text" name="NewType" placeholder="NewType" ngModel required>
@@ -39,6 +47,7 @@ Some great info about genres.
 </div>
 
 <div *ngIf="showDeleteEditor">
+  <h4>Delete a genre entry by ID</h4>
   <div>
     <form #user="ngForm" (ngSubmit)="onSubmitDelete(user.value)">
       <input type="number" name="ID" placeholder="ID" ngModel required>

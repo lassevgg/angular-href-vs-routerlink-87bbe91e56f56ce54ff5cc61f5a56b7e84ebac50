@@ -1,3 +1,78 @@
-<p>
-  movie works!
-</p>
+<nav>
+  <a class="mainItem" (click)="toggleEditor('info')">Movie Info</a>
+  <a class="mainItem" (click)="toggleEditor('get')" (click)="updateMovieList($event)">Get list of movies</a>
+  <a class="mainItem" (click)="toggleEditor('post')">Create a new movie</a>
+  <a class="mainItem" (click)="toggleEditor('update')">Update a movie</a>
+  <a class="mainItem" (click)="toggleEditor('delete')">Delete a movie</a>
+</nav>
+
+<hr>
+
+<div *ngIf="showInfoEditor">
+Movies information.
+</div>
+
+<div *ngIf="showElevatedUserMessageEditor">
+  This action requires elevated user access, please login to view.
+</div>
+
+<div *ngIf="showGetEditor">
+  <h4>Below is a list of all movie entries.</h4>
+  <ul *ngFor="let item of movieList">
+    <li>Title: {{item.title}}</li>
+    <li>Director: {{item.director}}</li>
+    <li>Description: {{item.description}}</li>
+    <li>Duration: {{item.durationMin}} minutes</li>
+  </ul>
+</div>
+
+<div *ngIf="showPostEditor">
+  <div>
+    <h4>Create a new movie entry.</h4>
+    <form #user="ngForm" (ngSubmit)="onSubmitPost(user.value)">
+      <input type="number" name="ID" placeholder="ID" ngModel required>
+      <input type="text" name="Title" placeholder="Title" ngModel required>
+      <input type="number" name="GenreID" placeholder="GenreID" ngModel required>
+      <input type="text" name="Director" placeholder="Director" ngModel required>
+      <input type="text" name="Description" placeholder="Description" ngModel required>
+      <input type="number" name="DurationMin" placeholder="DurationMin" ngModel required>
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+</div>
+
+<div *ngIf="showUpdateEditor">
+  <div>
+    <h4>Update a movie entry.</h4>
+    <form #user="ngForm" (ngSubmit)="onSubmitUpdate(user.value)">
+      <input type="number" name="ID" placeholder="ID" ngModel required>
+      <input type="text" name="Title" placeholder="Title" ngModel required>
+      <input type="number" name="GenreID" placeholder="GenreID" ngModel required>
+      <input type="text" name="Director" placeholder="Director" ngModel required>
+      <input type="text" name="Description" placeholder="Description" ngModel required>
+      <input type="number" name="DurationMin" placeholder="DurationMin" ngModel required>
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+</div>
+
+<!-- <div *ngIf="showDeleteEditor">
+  <div>
+    <form #user="ngForm" (ngSubmit)="onSubmitDelete(user.value)">
+      <input type="number" name="ID" placeholder="ID" ngModel required>
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+</div> -->
+
+<div *ngIf="showOperationSuccessEditor">
+  <div>
+    Operation was a success!
+  </div>
+</div>
+
+<div *ngIf="showOperationFailedEditor">
+  <div>
+    Operation failed...
+  </div>
+</div>

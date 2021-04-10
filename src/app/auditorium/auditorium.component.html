@@ -1,0 +1,71 @@
+<nav>
+  <a class="mainItem" (click)="toggleEditor('info')">Auditorium Info</a>
+  <a class="mainItem" (click)="toggleEditor('get')" (click)="updateAuditoriumList($event)">Get list of auditoriums</a>
+  <a class="mainItem" (click)="toggleEditor('post')">Create a new auditorium</a>
+  <a class="mainItem" (click)="toggleEditor('update')">Update a auditorium</a>
+  <a class="mainItem" (click)="toggleEditor('delete')">Delete a auditorium</a>
+</nav>
+
+<hr>
+
+<div *ngIf="showInfoEditor">
+  Auditorium information.
+</div>
+
+<div *ngIf="showElevatedUserMessageEditor">
+  This action requires elevated user access, please login to view.
+</div>
+
+<div *ngIf="showGetEditor">
+  <h4>Below is a list of all auditorium entries.</h4>
+  <ul *ngFor="let item of auditoriumList">
+    <li>MovieID: {{item.id}}</li>
+    <li>MovieID: {{item.name}}</li>
+    <li>MovieID: {{item.seatsNumber}}</li>
+  </ul>
+</div>
+
+<div *ngIf="showPostEditor">
+  <div>
+    <h4>Create a new auditorium entry.</h4>
+    <form #user="ngForm" (ngSubmit)="onSubmitPost(user.value)">
+      <input type="number" name="ID" placeholder="ID" ngModel required>
+      <input type="text" name="Name" placeholder="Name" ngModel required>
+      <input type="number" name="SeatsNumber" placeholder="SeatsNumber" ngModel required>
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+</div>
+
+<div *ngIf="showUpdateEditor">
+  <div>
+    <h4>Update a auditorium entry.</h4>
+    <form #user="ngForm" (ngSubmit)="onSubmitUpdate(user.value)">
+      <input type="number" name="ID" placeholder="ID" ngModel required>
+      <input type="text" name="Name" placeholder="Name" ngModel required>
+      <input type="number" name="SeatsNumber" placeholder="SeatsNumber" ngModel required>
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+</div>
+
+<!-- <div *ngIf="showDeleteEditor">
+  <div>
+    <form #user="ngForm" (ngSubmit)="onSubmitDelete(user.value)">
+      <input type="number" name="ID" placeholder="ID" ngModel required>
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+</div> -->
+
+<div *ngIf="showOperationSuccessEditor">
+  <div>
+    Operation was a success!
+  </div>
+</div>
+
+<div *ngIf="showOperationFailedEditor">
+  <div>
+    Operation failed...
+  </div>
+</div>

@@ -1,6 +1,6 @@
 export class AdminUser{
-    Username: string | undefined
-    Password: string | undefined
-    JwtToken: string | undefined
+    username: string | undefined
+    password: string | undefined
+    jwtToken: string | undefined
   };
   

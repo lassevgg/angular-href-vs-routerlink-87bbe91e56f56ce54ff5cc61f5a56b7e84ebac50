@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Genre } from 'src/app/Models/Genre';
 import { APIService } from 'src/app/Services/api.service';
 
-export type EditorType = 'info' | 'get' | 'post' | 'update' | 'delete' | 'operationSuccess' | 'operationFailed';
+export type EditorType = 'info' | 'get' | 'post' | 'update' | 'delete' | 'operationSuccess' | 'operationFailed' | 'elevatedUserMessage';
 
 @Component({
   selector: 'app-genre',
@@ -14,6 +14,8 @@ export class GenreComponent implements OnInit {
 
   title: string = "Genre";
 
+  elevatedUserRequired: boolean;
+
   genreList: Genre[] = [];
   postSuccess: boolean = undefined
   putSuccess: boolean = undefined
@@ -22,6 +24,7 @@ export class GenreComponent implements OnInit {
   constructor(private ApiService:APIService) { }
 
   ngOnInit(): void {
+    this.elevatedUserRequired = true;
   }
 
   get showInfoEditor() {
@@ -29,6 +32,7 @@ export class GenreComponent implements OnInit {
   }
 
   get showGetEditor() {
+    
     return this.editor === 'get';
   }
 
@@ -52,15 +56,29 @@ export class GenreComponent implements OnInit {
     return this.editor === 'operationFailed';
   }
 
+  get showElevatedUserMessageEditor() {
+    return this.editor === 'elevatedUserMessage';
+  }
+
   toggleEditor(type: EditorType) {
-    this.editor = type;
+    if (this.elevatedUserRequired) {
+      if(this.ApiService.adminUser == null){
+        return this.editor = 'elevatedUserMessage'
+      }
+      else{
+        return this.editor = type;
+      }
+    }
+    else{
+      return this.editor = type;
+    }        
   }
 
   updateGenreList():void{
-    this.ApiService.getGenreList().subscribe(
-      dataFromAPI => {this.genreList = dataFromAPI}
-  );
-}
+    this.ApiService.getGenreList().subscribe( (result) => {
+      this.genreList = result
+    });
+  }
 
   getGenreListOut():Genre[]{    
     return this.genreList;
